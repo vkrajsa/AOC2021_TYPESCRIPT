@@ -23,7 +23,8 @@ class BingoGame {
     constructor(bingoNumbers, boards) {
         this.bingoNumbers = bingoNumbers;
         this.boards = boards;
-        this.gameCompleted = false;
+        this.playersFinished = 0;
+        this.players = this.boards.length;
     }
     startGame() {
         // STARTING WITH number[][] you map the nested array to be a Board[]
@@ -31,23 +32,34 @@ class BingoGame {
         let finalResult = null;
         // LOOP THROUGH NUMBERS
         for (const drawnNumber of bingoNumbers) {
-            if (this.gameCompleted) {
+            if (finalResult) {
                 break;
             }
+            // PART 2
+            // IF THE BOARD GETS COMPLETED, KICK IT OUF OF THE ARRAY OF bingoBoards
+            // IF THE BOARD GETS COMPLETED AND ITS THE LAST BOARD
+            //  STEP 1 - LET ALL BOARD FINISH AND DONT STOP THE GAME...
+            // NEXT STEP - CREATE VAR THAT HOLDS BOARDS FINISHED
             for (const board of bingoBoards) {
                 // board returns index
-                const result = board.analyzeDrawnNumber(drawnNumber);
-                if (result) {
-                    this.gameCompleted = true;
-                    finalResult = this.bingo(result);
-                    break;
+                const completedBoard = board.analyzeDrawnNumber(drawnNumber);
+                if (completedBoard) {
+                    this.playersFinished++;
+                    if (this.playersFinished === this.players) {
+                        this.bingo(completedBoard);
+                        finalResult = this.bingo(completedBoard);
+                        break;
+                    }
                 }
             }
         }
         return finalResult;
     }
-    bingo(boardIndex) {
-        console.log(`THe winner is board with index: ${boardIndex}`);
+    bingo(board) {
+        console.log(`The winner is board with index: ${board.boardIndex}`);
+        console.log(`Last number called: ${board.lastNumberDrawn}`);
+        console.log(`Calculation for remaining numbers: ${board.calculation}`);
+        return board.calculation;
     }
 }
 class Board {
@@ -58,6 +70,8 @@ class Board {
         this.boardCompleted = false;
     }
     analyzeDrawnNumber(drawnNumber) {
+        if (this.boardCompleted)
+            return;
         const index = this.boardNumbers.indexOf(drawnNumber);
         // IF NUMBER IS FOUND ON THE BOARD
         if (index != -1) {
@@ -74,7 +88,11 @@ class Board {
             const remainingNumbers = this.boardNumbers
                 .filter(x => x != -1)
                 .reduce((prev, next) => prev + next);
-            return remainingNumbers * drawnNumber;
+            return {
+                calculation: remainingNumbers * drawnNumber,
+                lastNumberDrawn: drawnNumber,
+                boardIndex: this.boardIndex,
+            };
         }
     }
     replaceBoardNumber(index) {
