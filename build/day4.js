@@ -7,10 +7,7 @@ const fs_1 = __importDefault(require("fs"));
 const data = fs_1.default
     .readFileSync("./data/day4.txt", { encoding: "utf-8" })
     .split("\n\n")
-    // .filter(x => Boolean(x))
     .map((x, index) => {
-    console.log("index" + index, x);
-    // return x;
     return x
         .replace(/[\n ,]/g, " ")
         .trim()
@@ -35,16 +32,12 @@ class BingoGame {
             if (finalResult) {
                 break;
             }
-            // PART 2
-            // IF THE BOARD GETS COMPLETED, KICK IT OUF OF THE ARRAY OF bingoBoards
-            // IF THE BOARD GETS COMPLETED AND ITS THE LAST BOARD
-            //  STEP 1 - LET ALL BOARD FINISH AND DONT STOP THE GAME...
-            // NEXT STEP - CREATE VAR THAT HOLDS BOARDS FINISHED
             for (const board of bingoBoards) {
                 // board returns index
                 const completedBoard = board.analyzeDrawnNumber(drawnNumber);
                 if (completedBoard) {
                     this.playersFinished++;
+                    // FORT PART I YOU WOULD CHANGE THIS LINE... TO this.playersFinished === 1
                     if (this.playersFinished === this.players) {
                         this.bingo(completedBoard);
                         finalResult = this.bingo(completedBoard);
