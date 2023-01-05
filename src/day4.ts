@@ -30,9 +30,7 @@ class BingoGame {
 
   public startGame() {
     // STARTING WITH number[][] you map the nested array to be a Board[]
-    const bingoBoards = this.boards.map(
-      (board, index) => new Board(board, index),
-    );
+    const bingoBoards = this.boards.map((board, index) => new Board(board, index));
 
     let finalResult = null;
 
@@ -130,9 +128,7 @@ class Board {
   }
 
   private transposeArray(boardMatrix: BoardMatrix): number[][] {
-    return boardMatrix.map((_, colIndex) =>
-      boardMatrix.map(row => row[colIndex]),
-    );
+    return boardMatrix.map((_, colIndex) => boardMatrix.map(row => row[colIndex]));
   }
 }
 
